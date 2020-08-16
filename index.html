@@ -2,24 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player - HTML5</title>
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://kit.fontawesome.com/d21eb0851c.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Roboto+Condensed:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="jason.css">
+    <title>DS Audio Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- required links -->
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link href="jason.css" rel="stylesheet"/>
+
+
 </head>
 <body>
-    <div class="jd_player" id="jason" data-tag=""></div>
-    
-    <script src="jason.js"></script>
-    <script>
-        $("#jason").jd_player({
-            type: "SHOUTCAST",
-            URL: "http://190.stm-ip.com:6724",
-            radio_logo: "",
-        });
-    </script>
+
+<div class="shiPlayer" id="radio1" data-tag=""></div>
+<!--
+<div class="shiPlayer" id="radio2" data-tag=""></div>
+-->
+
+<script src="jason.js"></script>
+<script>
+    $("#radio1").shiPlayer({
+        type: "SHOUTCAST",
+        //URL: "http://80sbeats.cyberbeats.net:8000",
+		URL: "http://srv1.centralhost.ga:7014/",
+        radio_logo: "img/xat.png",
+    });
+    $("#radio2").shiPlayer({
+        type: "icecast",
+        URL: "http://relay-chi.gameowls.com:8000",
+        mount_point: "chiptune.mp3",
+        cors_proxy: "https://cors-anywhere.herokuapp.com/"
+    });
+
+</script>
 </body>
 </html>

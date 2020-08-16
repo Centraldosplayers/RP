@@ -1,266 +1,221 @@
-(function($){
+/*! SHOUTcast & Icecast Radio Player  v1.1 (2/7/17) | (c) 2017, Danial Sabagh | http://danialsabagh.com | http://mersadesign.com */
+(function ($) {
     "use strict";
-    
-    $(".jd_player").append('<div class="jd_content">' +
-                '<div class="jd_header"><div class="jd_station_name">Station Radio Name</div><div class="jd_live">OffLine</div></div>' +
-                '<div class="jd_section">'+
-                '<div class="jd_col_l">'+
-                '<div class="jd_artist_img"></div>'+
-                '</div>'+
-                '<div class="jd_col_r">'+
-                '<div class="jd_nowplaying_img">'+
-                '<span class="jd_track_art">Artist name</span>'+
-                '<div class="jd_track_title_img">NowPlaying Song Name</div>'+
-                '</div>'+
-                '<div class="jd_clock">'+
-                '<div class="jd_clock_inner"><span class="fas fa-clock"></span><div id="clock"></div></div>'+
-                '<div class="jd_day"><span class="fas fa-calendar-alt"></span><h2 id="day">SunDay</h2></div><div class="jd_date">30 MARCH 2020</div></div>' +
-                '<div class="jd_spectrum"><canvas class="jd_canvas"></canvas></div>'+
-                '</div>'+
-                '</div>'+
-                '<div class="jd_article"><div class="jd_nowplaying"><h1 class="jd_track_title">NowPlaying Song Name</h1></div><span class="jd_track_artist">Artist name</span></div>' +
-                '<div class="jd_footer"><div class="jd_infor_station"><ul class="jd_list">'+
-                '<li class="jd_item"><h2 class="jd_listen">Listener: <span class="jd_desc" id="listener">10</span></h2></li>'+
-                '<li class="jd_item"><h2 class="jd_listen">Current Listener: <span class="jd_desc" id="current_listener">10</span></h2></li>'+
-                '<li class="jd_item"><h2 class="jd_listen">Genre: <span class="jd_desc" id="genre">Dance</span></h2></li>'+
-                '<li class="jd_item"><h2 class="jd_listen">Station: <span class="jd_desc" id="station">Station Name</span></h2></li>'+
-                '</ul></div>'+
-                '<div class="jd_nav">'+
-                '<div class="jd_social">'+
-                '<a class="jd_btn_social" id="facebook" href="#" target="_blank">Facebook</a>'+
-                '<a class="jd_btn_social" id="twitter" href="#" target="_blank">Twitter</a>'+
-                '<a class="jd_btn_social" id="youtube" href="#" target="_blank">Youtube</a>'+
-                '<a class="jd_btn_social" id="site" href="#" target="_blank">Site</a>'+
-                '</div>'+
-                '<div class="jd_control"><div class="jd_btn_play"><span class="fas fa-play" id="btn_play"></span></div>'+
-                '<div class="jd_box_volume">'+
-                '<span class="fas fa-volume-down"></span>'+
-                '<div class="jd_volume" id="volume">'+
-                '<span class="jd_progressbar"><span id="vol_progressbar"></span></span>'+
-                '<input type="range" min="0" max="100" step="1" value="100" class="jd_slider" id="volume_bar" role="progressbar">'+
-                '</div>'+
-                '<span class="fas fa-volume-up"></span>'+
-                '</div>'+
-                '</div>'+
-                '</div>'+
-                '</div>'+
-                '</div>');
 
-    $.fn.jd_player = function (options) {
+    $(".shiPlayer").append('<div class="blur"></div>' +
+        '<div class="mainSection"><div class="panel1"><div class="top"><div class="trackTitle">Track Title</div><div class="trackSinger">Track Artist</div></div><div class="middle"><div class="centered-vertically"></div><div class="play"><div class="playpausebtn icon-play-r"></div><div class="frontTiming">00:00 / </div></div></div></div>' +
+        '<div class="panel2" style="display:none"><ul></ul></div>' +
+        '<div class="panel3" style="display:none"><div class="rLogo" alt="" title=""></div><div class="rName"><span class="icon-radio-tower"></span><span class="ct"></span></div><div class="cListeners"><span class="icon-headphones"></span><span class="ct"></span></div><div class="pListeners"><span class="icon-power"></span><span class="ct"></span></div><div class="rSite"><span class="icon-link"></span><span class="ct"></span><a target="_blank" href="" title="Stream Website" >Stream Website</a></div><div class="rTags"><span class="icon-tag"></span></div></div></div>' +
+        '<div class="dashboard"><div class="centered-vertically"></div><div class="icon-Info"></div><div class="icon-history2"></div><div class="live" style="width: 50px"><div class="bliking"></div><div class="icon"></div></div><div class="sound shake icon-volume-high"></div><div class="share-button "><div href="#" class="social-toggle icon-share"></div><div class="social-networks"><ul><li class="social-twitter icon-twitter"><a target="_blank" href="#"></a></li><li class="social-facebook icon-facebook"><a target="_blank" href="#"></a></li><li class="social-gplus icon-google-plus"><a target="_blank" href="#"></a></li><li class="social-email icon-email"><a target="_blank" href="#"></a></li></ul></div></div></div>');
+
+    $.fn.shiPlayer = function (options) {
         var settings = $.extend({
-            type:"",
-            URL:"",
-            lastFMkey:"665b8ff2830d494379dbce3fb3b218a9",
-            mount_point:"",
-            cors_proxy:"",
-            stream_id:1,
-            streampath:"/;stream.mp3?icy=http",
-            radio_logo:"",
-            default_image:"https://i.postimg.cc/wxVt2PHR/default-image.jpg",
-            autoplay:true,
-            context: new AudioContext(),
-            freqData: null,
-            audioAgain: null,
-            source: null,
-            analyser: null,
-            fxBox: null,
-            ctx: null,
-            cv_w: 160,
-            cv_h: 100,
-            volume: 0.5,
-            facebook: 'https://facebok.com/',
-            twitter: 'https://twitter.com/',
-            youtube: 'https://youtube.com',
-            site: 'https://www'
-        }, options);
+            // The defaults
+            type: "",
+            URL: "",
+            lastFMkey: "665b8ff2830d494379dbce3fb3b218a9",
+            mount_point: "",
+            cors_proxy: "",
+            stream_id: 1,
+            streampath: "/stream?icy=http",
+            radio_logo: "",
+            default_image: "./img/xat.png",
+            blurriness: "",
+            autoplay: true
 
+        }, options);
         var thisObj;
         thisObj = this;
         var audio;
-        var ppBtn = $("#btn_play", thisObj);
-
-        var canvas = document.querySelector(".jd_canvas");
-        var ctx = canvas.getContext('2d');
-        var bar_w, bar_h;
-        canvas.width = settings.cv_w;
-        canvas.height = settings.cv_h;
+        var ppBtn = $(".playpausebtn", thisObj);
 
         audio = new Audio();
-        audio.preload = "auto";
-        audio.volume = settings.volume;
+        audio.volume = 1;
 
-        thisObj.each(function (){
-            if(settings.autoplay){
+
+        thisObj.each(function () {
+            //Settings
+            if(settings.radio_logo.length > 0){
+                $("div.panel3 > div.rLogo", thisObj).css('background-image', 'url(' + settings.radio_logo + ')');
+            }
+            if(settings.blurriness.length > 0){
+                $("div.blur", thisObj).css({
+                    'filter': 'blur(' + settings.blurriness + ')',
+                    '-webkit-filter': 'blur(' + settings.blurriness + ')',
+                    '-moz-filter': 'blur(' + settings.blurriness + ')',
+                    '-ms-filter': 'blur(' + settings.blurriness + ')',
+                    '-o-filter': 'blur(' + settings.blurriness + ')'
+                })
+            }
+            if (settings.autoplay){
                 audio.autoplay = true;
-                //setupAudio();
             }
             ShareImplementation();
 
-            if(settings.type.toLowerCase() == "shoutcast"){
+
+            if (settings.type.toLowerCase() == "shoutcast") {
+
                 audio.src = settings.URL + settings.streampath;
-                audio.crossOrigin = "anonymous";
-                //audio.load();
-                var dataURL = settings.URL + "/stats?sid=" + 
-                settings.stream_id + "&json=1&callback=?";
-                var hisURL = settings.URL + "/played?sid=" + 
-                settings.stream_id + "&type=json&callback=?";
+                var dataURL = settings.URL + "/stats?sid="+ settings.stream_id +"&json=1&callback=?";
+                var hisURL = settings.URL + "/played?sid="+ settings.stream_id +"&type=json&callback=?";
 
                 updateSH(dataURL, hisURL);
             }
+            else if (settings.type.toLowerCase() == "icecast") {
+                audio.src = settings.URL + "/" + settings.mount_point;
+                var dataURL = settings.cors_proxy + settings.URL + "/status-json.xsl";
+
+                updateIC(dataURL);
+            }
+
         });
 
-        $(audio).on("playing", function(){
+
+        $(audio).on("playing", function () {
             togglePlying(ppBtn, true);
-            $(ppBtn).addClass("fa-stop");
-            $(ppBtn).removeClass("fa-play");
-            $(".jd_live", thisObj).text("OnLine");
+            $(ppBtn).addClass("icon-stop-r");
+            $(ppBtn).removeClass("icon-play-r");
         });
-        $(audio).on("pause", function(){
-            $(ppBtn).addClass("fa-play");
-            $(ppBtn).removeClass("fa-stop");
-            $(".jd_live", thisObj).text("OffLine");
+        $(audio).on("pause", function () {
+            togglePlying(ppBtn, false);
+            $(ppBtn).removeClass("icon-stop-r");
+            $(ppBtn).addClass("icon-play-r");
         });
-        $(ppBtn, thisObj).on("click tap", function(){
+        $(audio).on("timeupdate", function () {
+            $(".frontTiming", thisObj).text(getReadableTime(this.currentTime));//.append("<span class='inf'>∞</span>");
+        });
+
+
+        // Buttons
+        $(ppBtn, thisObj).on("click tap", function () {
             playManagement();
         });
-        //setupAudio();
-        function setupAudio(){
-            settings.source = settings.context.createMediaElementSource(audio);
-            settings.audioAgain = settings.context.createGain();
-            settings.analyser = settings.context.createAnalyser();
-            //conect
-            settings.source.connect(settings.audioAgain);
-            settings.source.connect(settings.analyser);
-            settings.audioAgain.connect(settings.context.destination);
-            //audio.volume = 0.5;
-            initAnimation();
-            setVolume(settings.volume);
+        $(".sound", thisObj).on("click tap", function() {
+            if($(this).hasClass("icon-volume-mute2")){
+                $(audio).animate({volume: 1}, 500);
+                $(this, thisObj).removeClass("icon-volume-mute2", 1000, "linear" );
+            }
+            else{
+                $(audio).animate({volume: 0}, 500);
+                $(this, thisObj).addClass("icon-volume-mute2", 1000, "linear" );
+            }
+            closeShareButton();
+        });
 
-            audio.addEventListener('waiting', function(){
-                settings.autoplay = false;
-            });
 
-            audio.addEventListener('playing', function(){
-                settings.autoplay = true;
-                audio.play();
-                settings.freqData = new Uint8Array(settings.analyser.frequencyBinCount);
-            });
-
-            audio.addEventListener('ended', function(){
-                settings.autoplay = false;
-            });
-            initAnimation();
+        //Utility Functions
+        function togglePlying(aClassName, bool) {
+            $(aClassName).toggleClass("playing", bool);
         }
 
-        function togglePlying(elem, bool){
-            $(elem).toggleClass("playing", bool);
-        }
-
-        function setVolume(volume){
-            if(!settings.audioAgain) return;
-            volume = (volume < 0) ? 0 : volume;
-            volume = (volume > 1) ? 1 : volume;
-            settings.audioAgain.gain.value = volume;
-        }
-
-        function playManagement(){
-            if(audio.paused){
-                setTimeout(function(){
+        function playManagement() {
+            if (audio.paused) {
+                setTimeout(function () {
                     audio.play();
                 }, 150);
 
-                var $playing = $('#btn_play.playing');
-                if($(thisObj).find($playing).length === 0){
+                var $playing = $('.playpausebtn.playing');
+                if ($(thisObj).find($playing).length === 0) {
                     $playing.click();
                 }
+
+                $(thisObj).addClass("bekhon");
+                $(".shiPlayer", thisObj).removeClass("nakhon ");
             } else {
                 audio.pause();
-                //audio.currentTime = 1;
+
+                $(thisObj).addClass("nakhon");
+                $(".shiPlayer", thisObj).removeClass("bekhon");
             }
+
         }
-        
-        function getReadableTime(value){
-            if(value == "Infinity"){
+
+        function getReadableTime(value) {
+            //Convert milisec to "readable" time
+            if (value == "Infinity") {
                 return "live";
             } else {
                 var durmins = Math.floor(value / 60);
                 var dursecs = Math.floor(value - durmins * 60);
-                if(dursecs < 10){dursecs = "0" + dursecs;}
-                if(durmins < 10){durmins = "0" + durmins;}
-
+                if (dursecs < 10) {
+                    dursecs = "0" + dursecs;
+                }
+                if (durmins < 10) {
+                    durmins = "0" + durmins;
+                }
                 return durmins + ":" + dursecs + " / ";
             }
+
         }
 
-        function splitter(text, ref){
+        function splitter(text, ref) {
             if(text === undefined){
                 text = "undefined - undefined";
             }
-            if(text.indexOf('-') > -1){
+            if(text.indexOf('-') > -1) {
                 var [artist, title] = text.split(/-(.+)?/);
-                if(ref == "artist"){
+                if (ref == "artist") {
                     return artist.trim();
                 }
-                else if(ref == "title"){
+                else if (ref == "title") {
                     return title.trim();
                 }
-            } else {
+            }
+            else{
                 console.log("The track name is not separated by - (dash)!");
-                if(ref == "artist"){
+                if (ref == "artist") {
                     return "";
                 }
-                else if(ref == "title"){
+                else if (ref == "title") {
                     return text;
                 }
             }
         }
 
-        function updateArtist(name){
-            $(".jd_track_artist", thisObj).attr("data-text", name).text(textShortener(name, 25));
-            $(".jd_track_art", thisObj).attr("data-text", name).text(textShortener(name, 25));
+        function updateArtist(name) {
+            $(".trackSinger", thisObj).attr("data-text", name).text(textShortener(name, 30));
         }
 
-        function updateTitle(name){
-            $(".jd_track_title", thisObj).attr("data-text", name).text(textShortener(name, 25));
-            $(".jd_track_title_img", thisObj).attr("data-text", name).text(textShortener(name, 25));
+        function updateTitle(name) {
+            $(".trackTitle", thisObj).attr("data-text", name).text(textShortener(name, 25));
         }
 
-        function updateTag(data){
+        function updateTag(data) {
             $(thisObj).attr("data-tag", data);
         }
 
-        function getImage(artist){
+        function getImage(artist) {
             artist = prepareArtistName(artist);
             artist = encodeURI(artist);
-            var url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + 
-            artist + "&api_key=" + settings.lastFMkey + "&format=json";
-            $.getJSON(url, function (data){
+
+            var url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist + "&api_key=" + settings.lastFMkey + "&format=json";
+            $.getJSON(url, function (data) {
                 var image = settings.default_image;
                 if(data.error){
                     console.log(data.message);
-                    console.log("The above error is for" + encodeURI(artist));
+                    console.log("The above error is for " + encodeURI(artist));
                 }
                 else if(data.artist.image[data.artist.image.length - 1]["#text"].length > 0){
                     image = data.artist.image[data.artist.image.length - 1]["#text"];
                 }
                 else{
-                    console.log("No image is associated with \'" + decodeURI(artist) + "\' on last.FM!")
+                    console.log("No image is associated with \'"+ decodeURI(artist) + "\' on Last.FM!")
                 }
-                $(".jd_artist_img", thisObj).css("background-image", "url(" + image + ")");
+
+                $(".blur", thisObj).css("background-image", "url(" + image + ")");
             })
-            .error(function(){
-                console.log("#getImage(), Error in loading artist background image for " + decodeURI(artist));
-            });
+                .error(function() { console.log("#getImage(), Error in loading artist background image for "  + decodeURI(artist)); });
+
         }
 
-        function getTag(){
+        function getTag() {
             return $(thisObj).attr("data-tag");
         }
 
-        function updateSH(url, history){
-            setInterval(function (){
-                $.getJSON(url, function (data){
-                    if(data.sontitle != getTag()){
+        function updateSH(url, history) {
+            setInterval(function () {
+                $.getJSON(url, function (data) {
+                    if (data.songtitle != getTag()) {
                         updateTag(data.songtitle);
                         var artist = splitter(data.songtitle, "artist");
                         var title = splitter(data.songtitle, "title");
@@ -268,60 +223,292 @@
                         updateTitle(title);
                         getImage(artist);
 
+
+                        updateHistory(history);
+                        getNextSong(data);
                         updateServerInfoSH(data);
                     }
                 })
-                .error(function (){
-                    console.log("Error, in loading Shoutcast" + url);
-                });
+                    .error(function() { console.log("Error, in loading ShoutCast " + url); });
             }, 750);
         }
 
-        function getTime(unixtimestamp){
+        function updateHistory(url) {
+            $(".panel2 ul li", thisObj).remove();
+            $.getJSON(url, function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var rowNum = i;
+                    var artist = splitter(data[i].title, "artist");
+                    var title = splitter(data[i].title, "title");
+                    var listVal = rowNum;
+                    if (rowNum === 0) {
+                        listVal = "NOW";
+                    }
+
+                    var artistTEMP = textShortener(artist, 20);
+                    var titleTEMP = textShortener(title, 28);
+
+                    $(".panel2 ul", thisObj).append(
+                        "<li class='list' id='row" + rowNum + "'>" +
+                        "<div class='leftBox'><div class='listNum'><span>" + listVal + "</span></div>" +
+                        "<p class='title'>" + titleTEMP + "</p>" +
+                        "<p class='singer'>" + artistTEMP + "  " + getTime(data[i].playedat) + "</p>" +
+                        "</div>" +
+                        "<div class='rightBox'>" +
+                        "<div class='artwork'></div>" +
+                        "</div>" +
+                        "</li>"
+                    );
+                    getImageList(artist, rowNum);
+                }
+            });
+        }
+
+        function getImageList(artist, i) {
+            artist = prepareArtistName(artist);
+            artist = encodeURI(artist);
+
+            var url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist + "&api_key=" + settings.lastFMkey + "&format=json";
+            $.getJSON(url, function (data) {
+                var image = settings.default_image;
+                if(data.error){
+                    // Do nothing
+                }
+                else if(data.artist.image[data.artist.image.length - 1]["#text"].length > 0){
+                    image = data.artist.image[data.artist.image.length - 1]["#text"];
+                }
+
+                $("li#row" + i + ".list > div.rightBox > div.artwork", thisObj).css("background-image", "url(" + image + ")");
+            })
+                .error(function() { console.log("#getImageList(), Error in loading history image list for "  + decodeURI(artist)); });
+        }
+
+        function getNextSong(data) {
+            setTimeout(function () {
+                if(data.nexttitle !== undefined){
+                    var artist = splitter(data.nexttitle, "artist");
+                    var title = splitter(data.nexttitle, "title");
+
+                    var artistTEMP = textShortener(artist, 20);
+                    var titleTEMP = textShortener(title, 28);
+
+                    $(".panel2 ul li.list#row0", thisObj).before(
+                        "<li class='list' id='row" + "NEXT" + "'>" +
+                        "<div class='leftBox'><div class='listNum nxttrack'><span>" + "NEXT" + "</span></div>" +
+                        "<p class='title'>" + titleTEMP + "</p>" +
+                        "<p class='singer'>" + artistTEMP + "</p>" +
+                        "</div>" +
+                        "<div class='rightBox'>" +
+                        "<div class='artwork'></div>" +
+                        "</div>" +
+                        "</li>"
+                    );
+                    getImageList(artist, "NEXT");
+                }
+
+            }, 2000);
+        }
+
+        function getTime(unixtimestamp) {
             var dt = eval(unixtimestamp * 1000);
             var myDate = new Date(dt);
             var mt = myDate.toTimeString();
-            return "<span class='playedAt'>" + mt.substring(0, 9) + "</span>";
+            return "<span class='playedAT'>" + mt.substring(0, 9) + "</span>";
         }
 
-        function updateServerInfoSH(data){
-            $(".jd_station_name", thisObj).text(data.servertitle);
-            $("#station", thisObj).text(data.servertitle);
-            $("#listener", thisObj).text(data.peaklisteners);
-            $("#current_listener", thisObj).text(data.currentlisteners);
-            
+        function updateServerInfoSH(data) {
+            $("div.rName > .ct", thisObj).text(data.servertitle);
+            $("div.cListeners > .ct", thisObj).text("Current Listeners: " + data.currentlisteners);
+            $("div.pListeners > .ct", thisObj).text("Peak Listeners: " + data.peaklisteners);
+            $("div.rSite > a", thisObj).attr("href", data.serverurl);
+            $("div.rTags > .tg", thisObj).remove();
+
+
             let result = [];
-            Object.keys(data).forEach(key => {
+            Object.keys(data).forEach( key => {
                 if(/servergenre/.test(key)){
                     result.push(data[key])
                 }
             });
-            for(var i = 0; i < result.length; i++){
-                if(result[i] !== ""){
-                    $("#genre", thisObj).text(result[i])
+
+            for(var i =0; i < result.length; i++){
+                if(result[i] !== "") {
+                    $("div.rTags", thisObj).append("<span class='tg'>" + result[i] + "</span>")
+                }
+            }
+
+        }
+
+        // ICECAST
+        function updateIC(url) {
+            setInterval(function () {
+                $.getJSON(url, function (data) {
+                    var dataBit = findMountPointData(data);
+
+                    if (dataBit.title != getTag()) {
+                        updateTag(dataBit.title);
+                        var artist = splitter(dataBit.title, "artist");
+                        var title = splitter(dataBit.title, "title");
+                        updateArtist(artist);
+                        updateTitle(title);
+                        getImage(artist);
+
+
+                        if(history.length >= 20){
+                            history = [];
+                        }
+
+                        updateHistoryIC(artist, title);
+                        updateServerInfoIC(dataBit);
+
+                    }
+                })
+                    .error(function() { console.log("Error, in loading Icecast " + url); });;
+            }, 750);
+        }
+
+        function findMountPointData(data) {
+            if (data.icestats.source.length === undefined){
+                return data.icestats.source
+            }
+            else{
+                for (var i = 0; i < data.icestats.source.length; i++) {
+                    var str = data.icestats.source[i].listenurl;
+                    if (str.indexOf(settings.mount_point) >= 0) {
+                        return data.icestats.source[i];
+                    }
+                }
+            }
+        }
+
+        function updateHistoryIC(artist, title) {
+            addToHistoryArray(title, artist, new Date().getTime() / 1000);
+            history[history.length-1].tm = 0;
+            createHistoryRows();
+        }
+
+        function updateServerInfoIC(data) {
+            //console.log(data);
+            $("div.rName > .ct", thisObj).text(data.server_name);
+            $("div.cListeners > .ct", thisObj).text("Current Listeners: " + data.listeners);
+            $("div.pListeners > .ct", thisObj).text("Peak Listeners: " + data.listener_peak);
+            $("div.rSite > a", thisObj).attr("href", data.server_url);
+            $("div.rTags > .tg", thisObj).remove();
+
+            var result = data.genre.split(" ");
+            for(var i =0; i < result.length; i++){
+                if(result[i] !== "") {
+                    $("div.rTags", thisObj).append("<span class='tg'>" + result[i] + "</span>")
                 }
             }
         }
 
         function prepareArtistName(artist){
             artist = artist.toLowerCase();
-            if(artist.includes("&")){
+            if (artist.includes("&")) {
                 artist = artist.replace('&', 'and');
             }
-            else if(artist.includes("feat")){
+            else if(artist.includes("feat")) {
                 artist = artist.substr(0, artist.indexOf('feat'));
-            }
-            else if(artist.includes("ft")){
+            } else if (artist.includes("ft")) {
                 artist = artist.substr(0, artist.indexOf('ft'));
             }
-            return artist;
-        }        
 
-        function ShareImplementation(){
-            $("#facebook", thisObj).attr("href", settings.facebook);
-            $("#twitter", thisObj).attr("href", settings.twitter);
-            $("#youtube", thisObj).attr("href", settings.youtube);
-            $("#site", thisObj).attr("href", settings.site);
+            return artist;
+        }
+
+        var history = new Array();
+        function addToHistoryArray(title, artist, time) {
+            history.unshift({ar: artist, tt: title, tm: time});
+        }
+
+        function createHistoryRows(){
+            $(".panel2 ul li", thisObj).remove();
+
+            for(var i = 0; i < history.length; i++){
+                var rowNum = i;
+                var time = 0;
+                var listVal = rowNum;
+
+                if (rowNum === 0) {
+                    listVal = "NOW";
+                }
+
+                if(i !== history.length-1){
+                    time = getTime(history[i].tm);
+                }else{
+                    time = "";
+                }
+
+                var artist = history[i].ar;
+                var title = history[i].tt;
+
+                var artistTEMP = textShortener(artist, 20);
+                var titleTEMP = textShortener(title, 28);
+
+                $(".panel2 ul", thisObj).append(
+                    "<li class='list' id='row" + rowNum + "'>" +
+                    "<div class='leftBox'><div class='listNum'><span>" + listVal + "</span></div>" +
+                    "<p class='title'>" + titleTEMP + "</p>" +
+                    "<p class='singer'>" + artistTEMP + "  " + time + "</p>" +
+                    "</div>" +
+                    "<div class='rightBox'>" +
+                    "<div class='artwork'></div>" +
+                    "</div>" +
+                    "</li>"
+                );
+
+                getImageList(history[i].ar, rowNum);
+            }
+        }
+
+
+        // Share
+        function setFBShareAttr(siteURL) {
+            var url = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(siteURL);
+            $("li.social-facebook", thisObj).find("a").attr("href", url);
+        }
+
+        function setTWShareAttr(siteURL) {
+            var url = "https://twitter.com/home?status=" + encodeURIComponent(siteURL);
+            $("li.social-twitter", thisObj).find("a").attr("href", url);
+        }
+
+        function setGPShareAttr(siteURL) {
+            var url = "https://plus.google.com/share?url=" + encodeURIComponent(siteURL);
+            $("li.social-gplus", thisObj).find("a").attr("href", url);
+        }
+
+        function setEmailAttr(siteURL) {
+            var radioName = $("div.panel3 > div.rName > span.ct").text();
+
+            var subjectText = "Listen to " + radioName;
+            var bodyText = "Check out the radio station " + radioName + " on " + siteURL;
+
+            var url = 'mailto:' + '' + '?subject=' + subjectText + '&body=' + bodyText;
+            $(".social-email > a", thisObj).on("click tap", function(event) {
+                event.preventDefault();
+                window.location = url;
+
+            });
+        }
+
+        function ShareImplementation() {
+            // Share implementations
+            setTimeout(function(){
+                "use strict";
+                var trackURL = window.location.href;
+                setFBShareAttr(trackURL);
+                setTWShareAttr(trackURL);
+                setGPShareAttr(trackURL);
+                setEmailAttr(trackURL);
+            }, 3000);
+        }
+
+        function closeShareButton() {
+            if ($(".social-networks", thisObj).hasClass("open-menu")) {
+                $(".social-networks", thisObj).removeClass("open-menu");
+            }
         }
 
         function textShortener(text, length){
@@ -332,78 +519,63 @@
             }
         }
 
-        function initCanvas(){
-            settings.fxBox = getBoundingClientRect();
-            var canvas = document.querySelector(".jd_canvas");
-            settings.ctx = canvas.getContext('2d');
-            canvas.width = settings.cv_w;
-            canvas.height = settings.cv_h;
-        }
 
-        function initAnimation(){
-            window.requestAnimationFrame(initAnimation);
-            settings.freqData = new Uint8Array(settings.analyser.frequencyBinCount);
-            settings.analyser.getByteFrequencyData(settings.freqData);
-            ctx.clearRect(0, 0, settings.cv_w, settings.cv_h);
 
-            for(var i = 0; i < settings.analyser.frequencyBinCount; i++){
-                var bar_x = i * 3;
-                bar_h = 2;
-                bar_h = -(settings.freqData[i] / 4.8);
 
-                ctx.fillRect(bar_x, settings.cv_h, bar_w, bar_h);
-            }
-            console.log(bar_h);
-        }
-        //initAnimation();
-        var sVolume = document.querySelector('#volume_bar');
-        sVolume.addEventListener('change', function(){
-            audio.volume = sVolume.value / 100;
+        // Third Party
+        $('.social-toggle', thisObj).on('click', function () {
+            $(this).next().toggleClass('open-menu');
         });
-        var progress = document.querySelector("#vol_progressbar");
-        sVolume.addEventListener('input', changeMove);
-        function changeMove(){
-            var val = sVolume.value;
-            progress.style.width = val + "%";
-        }
+        $("div.icon-history2", thisObj).on("click", function () {
+            $("div.icon-Info", thisObj).removeClass("pressed");
+            $(this).toggleClass("pressed");
+            var visibleObj = $('.mainSection > div:visible', thisObj);
+            if ($("div.panel2", thisObj).css("display") == "none") {
+                var inVisibleObj = $("div.panel2", thisObj)
+            }
+            else {
+                var inVisibleObj = $("div.panel1", thisObj)
+            }
+            visibleObj.fadeOut(500, function () {
+                inVisibleObj.fadeIn(500);
+            });
+            closeShareButton();
+        });
+        $("div.icon-Info", thisObj).on("click", function () {
+            $("div.icon-history2", thisObj).removeClass("pressed");
+            $(this).toggleClass("pressed");
+            var visibleObj = $('.mainSection > div:visible', thisObj);
+            if ($("div.panel3", thisObj).css("display") == "none") {
+                var inVisibleObj = $("div.panel3", thisObj)
+            }
+            else {
+                var inVisibleObj = $("div.panel1", thisObj)
+            }
+            visibleObj.fadeOut(500, function () {
+                inVisibleObj.fadeIn(500);
+            });
 
-        function initClear(){
-            setInterval(function(){
-                console.clear();
-            }, 10000);
-        }
+            closeShareButton();
+        });
 
-        function clockTime(){
-            var lang = navigator.language;
-            var date = new Date();
-            var day = date.getDate();
-            var dayName = date.toLocaleString(lang, {weekday: 'long'});
-            var month = date.getMonth();
-            var monthName = date.toLocaleString(lang, {month: 'long'});
-            var year = date.getFullYear();
-            var hr = date.getHours();
-            var mn = date.getMinutes();
-            var sc = date.getSeconds();
 
-            if(hr < 10){hr = "0" + hr}else{hr = hr};
-            if(mn < 10){mn = "0" + mn}else{mn = mn};
-            if(sc < 10){sc = "0" + sc}else{sc = sc};
-            if(day < 10){day = "0" + day}else{day = day};
-
-            $("#clock", thisObj).text(`${hr}:${mn}:${sc}`);
-            $("#day", thisObj).text(dayName);
-
-            var calendar = document.querySelector(".jd_date");
-            var form = `<span>${day}</span>`+
-            `<span>${monthName}</span>`+
-            `<span>${year}</span>`;
-
-            calendar.innerHTML = form;
-        }
-        window.setInterval(clockTime, 1000);
-        
-    console.log("ok!");
-    initClear();
+        // Keyboard
+        $(window).keypress(function(e) {
+            if (e.keyCode === 0 || e.keyCode === 32) {
+                e.preventDefault();
+                if ($(thisObj).hasClass("bekhon")) {
+                    audio.pause();
+                    $(thisObj).removeClass("bekhon");
+                    $(thisObj).addClass("nakhon");
+                } else if ($(thisObj).hasClass("nakhon")) {
+                    audio.play();
+                    $(thisObj).removeClass("nakhon");
+                    $(thisObj).addClass("bekhon");
+                }
+            }
+        })
     };
 
+
 })(jQuery);
+
